@@ -46,12 +46,17 @@ class SleepTrackerViewModel(val database: SleepDatabaseDao,
     //For timer
     var timeLeft : Long = 60000*45
     @SuppressLint("SimpleDateFormat")
-    var timeString = SimpleDateFormat("HH:mm:ss")
+    var timeStringFormat = SimpleDateFormat("mm:ss")
+
+    private var _timeLeftString = MediatorLiveData<String?>()
+    val timeLeftString: LiveData<String?>
+        get() = _timeLeftString
 
     private val timer = object : CountDownTimer(timeLeft, 1000){
         override fun onTick(millisUntilFinished: Long) {
+            _timeLeftString.value = timeStringFormat.format(Date(millisUntilFinished - (1000*60*60*3)))
             Log.i("SleepTrackerViewModel", "->" +
-                    " Time left: ${timeString.format(Date(millisUntilFinished - (1000*60*60*3)))}") }
+                    " Time left: ${timeLeftString.value}") }
 
         override fun onFinish() {
             Log.i("SleepTrackerViewModel", "-> Finish")
