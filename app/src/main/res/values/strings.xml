@@ -17,7 +17,7 @@
 <resources>
 
     <!-- App title and fragment titles -->
-    <string name="app_name">Track My Sleep Quality</string>
+    <string name="app_name">Work session time tracker</string>
     <string name="sleep_tracker_fragment">SleepTrackerFragment</string>
     <string name="sleep_quality_fragment">SleepQualityFragment</string>
 
@@ -35,14 +35,14 @@
     <string name="quality_5">Sleep Quality 5</string>
 
     <!-- Output to TextView styled with a little HTML -->
-    <string name="title"><![CDATA[<h3>HERE IS YOUR SLEEP DATA</h3>]]></string>
+    <string name="title"><![CDATA[<h3>HERE IS YOUR WORK DATA</h3>]]></string>
     <string name="start_time"><![CDATA[<b>Start:</b>]]></string>
     <string name="end_time"><![CDATA[<b>End:</b>]]></string>
     <string name="quality"><![CDATA[<b>Quality:</b>]]></string>
     <string name="hours_slept"><![CDATA[<b>Hours:Minutes:Seconds</b>]]></string>
 
     <!-- Sleep quality strings -->
-    <string name="how_was_hour_sleep">How was your sleep?</string>
+    <string name="how_was_hour_sleep">How was your work?</string>
     <string name="zero_very_bad">Very bad</string>
     <string name="one_poor">Poor</string>
     <string name="two_soso">So-so</string>
