@@ -21,10 +21,7 @@ import android.app.Application
 import android.content.Intent
 import android.os.CountDownTimer
 import android.util.Log
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.example.android.trackmysleepquality.database.SleepDatabase
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import com.example.android.trackmysleepquality.database.SleepNight
@@ -62,9 +59,38 @@ class SleepTrackerViewModel(val database: SleepDatabaseDao,
 
     }
 
+    //Change night type form string to resource
     val nightsString = Transformations.map(nights){
         nights -> formatNights(nights, application.resources)
     }
+
+    //Navigate to SleepQualityFragment
+    private val _navigateToSleepQuality = MutableLiveData<SleepNight>()
+    val navigateToSleepQuality : LiveData<SleepNight>
+        get() = _navigateToSleepQuality
+    fun doneNavigating(){
+        _navigateToSleepQuality.value = null
+    }
+
+    //Enabled buttons
+    val startBtnVisible = Transformations.map(tonight){
+        null == it
+    }
+    val stopBtnVisible = Transformations.map(tonight){
+        null != it
+    }
+    val clearBtnVisible = Transformations.map(nights){
+        it.isNotEmpty()
+    }
+
+    //Snackbar
+    private var _showSnackbarEvent = MutableLiveData<Boolean>()
+    val showSnackbarEvent: LiveData<Boolean>
+        get() = _showSnackbarEvent
+    fun doneShowingSnackbar() {
+        _showSnackbarEvent.value = false
+    }
+
 
     init {
         initializeTonight()
@@ -110,6 +136,10 @@ class SleepTrackerViewModel(val database: SleepDatabaseDao,
             oldNight.endTimeMilli = System.currentTimeMillis()
             update(oldNight)
 
+            //For navigation
+            _navigateToSleepQuality.value = oldNight
+
+            //For timer
             timer.cancel()
             Log.i("SleepTrackerViewModel", "-> Timer canceled")
 
@@ -127,13 +157,16 @@ class SleepTrackerViewModel(val database: SleepDatabaseDao,
         uiScope.launch {
             clear()
             tonight.value = null
+            _showSnackbarEvent.value = true
         }
     }
+
     private suspend fun clear() {
         withContext(Dispatchers.IO){
             database.clear()
         }
     }
+
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
